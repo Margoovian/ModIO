@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Backends">
+      <UniqueIdentifier>{E068357E-CC35-9089-F54E-7E31E17AC517}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Backends\SDL3">
+      <UniqueIdentifier>{4523DB4D-B1E3-5684-7A1E-A001E69D9B60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generators">
+      <UniqueIdentifier>{7F09C13D-6BC1-028B-D4C8-DBE6C09F9D7B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modifiers">
+      <UniqueIdentifier>{E74E347A-53B9-E8F0-9CF7-999608A1C645}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\AudioSession.cpp" />
+    <ClCompile Include="src\Backends\SDL3\SDLAudioSession.cpp">
+      <Filter>Backends\SDL3</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Generators\SawtoothGenerator.cpp">
+      <Filter>Generators</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Generators\SinewaveGenerator.cpp">
+      <Filter>Generators</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Generators\SquarewaveGenerator.cpp">
+      <Filter>Generators</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Generators\TrianglewaveGenerator.cpp">
+      <Filter>Generators</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ModIO.cpp" />
+    <ClCompile Include="src\Modifiers\Lowpass.cpp">
+      <Filter>Modifiers</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
