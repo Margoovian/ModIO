@@ -19,6 +19,7 @@
 #ifdef __EMSCRIPTEN__
 #include "../libs/emscripten/emscripten_mainloop_stub.h"
 #endif
+#include <ModIO.h>
 
 // Main code
 int main(int, char**)
@@ -88,14 +89,39 @@ int main(int, char**)
 
     // Main loop
     bool done = false;
-#ifdef __EMSCRIPTEN__
-    // For an Emscripten build we are disabling file-system access, so let's not attempt to do a fopen() of the imgui.ini file.
-    // You may manually call LoadIniSettingsFromMemory() to load settings from your own storage.
-    io.IniFilename = nullptr;
-    EMSCRIPTEN_MAINLOOP_BEGIN
-#else
+
+    using namespace ModIO;
+
+    std::unique_ptr<AudioSession> session = ModIO::CreateSession();
+
+    TD::MasterRef masterRef = session->GetMaster();
+
+    TD::SharedMaster master = GetShared(masterRef);
+
+    if (master) {
+
+        TD::SharedMixer mixer = master->AddMixer();
+
+        TD::SharedChain chain = mixer->AddChain();
+
+        TD::GeneratorRef generatorA = chain->SetGenerator<Generators::SawtoothGenerator>();
+        TD::GeneratorRef generatorB = mixer->AddChain()->SetGenerator<Generators::SawtoothGenerator>();
+        TD::GeneratorRef generatorC = mixer->AddChain()->SetGenerator<Generators::SawtoothGenerator>();
+        TD::GeneratorRef generatorD = mixer->AddChain()->SetGenerator<Generators::SawtoothGenerator>();
+
+        GetShared(generatorA)->mFrequency = 261.63f;
+        GetShared(generatorB)->mFrequency = 329.63f;
+        GetShared(generatorC)->mFrequency = 392.00f;
+        GetShared(generatorD)->mFrequency = 32.70f;
+
+        //TD::SharedComponent lowPass = chain->InsertComponent<Modifiers::Lowpass>();
+    }
+
+    session->Start();
+
+
     while (!done)
-#endif
+
     {
         // Poll and handle events (inputs, window resize, etc.)
         // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
@@ -170,9 +196,7 @@ int main(int, char**)
         ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), renderer);
         SDL_RenderPresent(renderer);
     }
-#ifdef __EMSCRIPTEN__
-    EMSCRIPTEN_MAINLOOP_END;
-#endif
+
 
     // Cleanup
     // [If using SDL_MAIN_USE_CALLBACKS: all code below would likely be your SDL_AppQuit() function]
@@ -180,6 +204,7 @@ int main(int, char**)
     ImGui_ImplSDL3_Shutdown();
     ImGui::DestroyContext();
 
+    session->Stop();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
