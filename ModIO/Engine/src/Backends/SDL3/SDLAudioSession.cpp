@@ -42,7 +42,7 @@ namespace ModIO {
 
 		SDLCall(SDL_Init(SDL_INIT_AUDIO), "SDL Audio Initialized");
 
-		SDLCallIsNull(mDeviceID, SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_OUTPUT, &mAudioSpecOut), "SDL Open Device");
+		SDLCallIsNull(mDeviceID, SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &mAudioSpecOut), "SDL Open Device");
 
 		SDLCallIsNull(mAudioStream, SDL_CreateAudioStream(&mAudioSpecIn, &mAudioSpecOut), "SDL Create Audio Stream");
 
