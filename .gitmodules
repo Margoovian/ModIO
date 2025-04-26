@@ -6,4 +6,4 @@
 	url = https://github.com/libsdl-org/SDL
 [submodule "Shared/ImNodeFlow"]
 	path = Shared/ImNodeFlow
-	url = https://github.com/Fattorino/ImNodeFlow
+	url = https://github.com/Margoovian/ImNodeFlow
