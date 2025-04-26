@@ -4,6 +4,6 @@
 [submodule "Shared/SDL3"]
 	path = Shared/SDL3
 	url = https://github.com/libsdl-org/SDL
-[submodule "Shared/imgui-node-editor"]
-	path = Shared/imgui-node-editor
-	url = https://github.com/thedmd/imgui-node-editor
+[submodule "Shared/ImNodeFlow"]
+	path = Shared/ImNodeFlow
+	url = https://github.com/Fattorino/ImNodeFlow
