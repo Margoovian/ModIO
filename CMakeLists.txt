@@ -3,41 +3,10 @@ set(CMAKE_CXX_STANDARD 20)
 
 # Subdirectories/Library Paths #####################
 
-set(IMGUI_NODES_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Shared/imgui-node-editor")
+set(IMGUI_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Shared/imgui")
+set(STB_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Shared/stb" )
 add_subdirectory("Shared/SDL3")
-add_subdirectory("${IMGUI_NODES_PATH}/external/imgui")
-add_subdirectory("${IMGUI_NODES_PATH}/external/ScopeGuard")
-add_subdirectory("${IMGUI_NODES_PATH}/external/stb_image")
-
-####################################################
-
-# ImGUI Node Editor Library ########################
-
-project(ImGUI_Nodes)
-
-set(IMGUI_NODES_SRC
-        "${IMGUI_NODES_PATH}/crude_json.cpp"
-        "${IMGUI_NODES_PATH}/crude_json.h"
-        "${IMGUI_NODES_PATH}/imgui_bezier_math.h"
-        "${IMGUI_NODES_PATH}/imgui_bezier_math.inl"
-        "${IMGUI_NODES_PATH}/imgui_canvas.cpp"
-        "${IMGUI_NODES_PATH}/imgui_canvas.h"
-        "${IMGUI_NODES_PATH}/imgui_extra_math.h"
-        "${IMGUI_NODES_PATH}/imgui_extra_math.inl"
-        "${IMGUI_NODES_PATH}/imgui_node_editor.cpp"
-        "${IMGUI_NODES_PATH}/imgui_node_editor.h"
-        "${IMGUI_NODES_PATH}/imgui_node_editor_api.cpp"
-        "${IMGUI_NODES_PATH}/imgui_node_editor_internal.h"
-        "${IMGUI_NODES_PATH}/imgui_node_editor_internal.inl"
-)
-
-add_library(ImGUI_Nodes ${IMGUI_NODES_SRC})
-
-target_include_directories(ImGUI_Nodes PRIVATE "${IMGUI_NODES_PATH}")
-
-target_link_libraries(ImGUI_Nodes PRIVATE imgui)
-target_link_libraries(ImGUI_Nodes PRIVATE ScopeGuard)
-target_link_libraries(ImGUI_Nodes PRIVATE stb_image)
+add_subdirectory("Shared/ImNodeFlow")
 
 ####################################################
 
@@ -60,7 +29,6 @@ endif()
 
 target_link_libraries(ModIO PRIVATE SDL3-shared)
 
-
 # Sandbox Dev Environment For ModIO#################
 
 project(Sandbox)
@@ -75,6 +43,18 @@ endif()
 
 target_link_libraries(Sandbox PUBLIC ModIO)
 
+####################################################
+
+# ImGUI ############################################
+
+set(IMGUI_BACKENDS_INCLUDE
+        "${IMGUI_PATH}/backends/imgui_impl_sdl3.h"   
+        "${IMGUI_PATH}/backends/imgui_impl_sdlrenderer3.h"   
+)
+set(IMGUI_BACKENDS_SOURCE
+        "${IMGUI_PATH}/backends/imgui_impl_sdl3.cpp"   
+        "${IMGUI_PATH}/backends/imgui_impl_sdlrenderer3.cpp" 
+)
 
 ####################################################
 
@@ -84,15 +64,31 @@ project(Application)
 
 file(GLOB_RECURSE APPLICATION_SOURCE CMAKE_CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/Application/src/*.cpp")
 
-add_executable(Application ${APPLICATION_SOURCE})
+add_executable(Application ${APPLICATION_SOURCE} )
+
+target_include_directories(Application
+    PRIVATE
+    ${IMGUI_PATH} 
+    "${IMGUI_PATH}/backends"
+    ${STB_PATH}
+)
+
+target_sources(Application 
+    PRIVATE
+    ${IMGUI_SOURCE}
+    ${IMGUI_BACKENDS_SOURCE}
+    "${STB_PATH}/stb_image.cpp"
+)
+
+add_compile_definitions(Application PRIVATE IMGUI_DEFINE_MATH_OPERATORS)
+target_compile_definitions(Application PRIVATE IMGUI_NODES_DATA="${IMGUI_NODES_PATH}/examples/data")  
 
 if(WIN32)
   target_compile_definitions(Application PRIVATE MOD_PLATFORM_WINDOWS)  
 endif()
 
 target_link_libraries(Application PRIVATE ModIO)
-target_link_libraries(Application PUBLIC SDL3-shared)
-target_link_libraries(Application PRIVATE ImGUI_Nodes)
-
+target_link_libraries(Application PRIVATE SDL3-shared)
+target_link_libraries(Application PRIVATE ImNodeFlow)
 
 ####################################################
