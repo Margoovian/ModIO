@@ -1,0 +1,9 @@
+[submodule "Shared/imgui"]
+	path = Shared/imgui
+	url = https://github.com/ocornut/imgui
+[submodule "Shared/SDL3"]
+	path = Shared/SDL3
+	url = https://github.com/libsdl-org/SDL
+[submodule "Shared/imgui-node-editor"]
+	path = Shared/imgui-node-editor
+	url = https://github.com/thedmd/imgui-node-editor
