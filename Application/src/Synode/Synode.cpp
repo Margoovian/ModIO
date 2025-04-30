@@ -1,7 +1,15 @@
 #include "Synode.h"
 
+#include "Nodes/GeneratorNode.h"
+#include "Nodes/MasterNode.h"
+#include "Nodes/SineGeneratorNode.h"
+#include "Nodes/SquarewaveGeneratorNode.h"
+#include "Nodes/TrianglewaveGeneratorNode.h"
+#include "Nodes/SawtoothGeneratorNode.h"
+
 void Synode::Render()
 {
+	m_NodeEditor->DrawGrid();
 }
 
 void Synode::Process()
@@ -19,35 +27,37 @@ void Synode::Shutdown()
 void Synode::SetupApp()
 {
 
+	InitializeGraph();
+
+	m_MasterNode = m_NodeEditor->Handler.addNode<MasterNode>({ 900,100 });
+	m_NodeEditor->Handler.addNode<GeneratorNode>({ 500,100 });
+	m_NodeEditor->Handler.addNode<SineGeneratorNode>({ 200,100 });
+	m_NodeEditor->Handler.addNode<SquarewaveGeneratorNode>({ 200,350 });
+	m_NodeEditor->Handler.addNode<TrianglewaveGeneratorNode>({ 200,600 });
+	m_NodeEditor->Handler.addNode<SawtoothGeneratorNode>({ 200,850 });
+
+	InitializeAudio();
+
+}
+
+void Synode::InitializeAudio()
+{
 	using namespace ModIO;
 
 	m_Session = ModIO::CreateSession();
 
-	TD::MasterRef masterRef = m_Session->GetMaster();
+	GetSessionInterface()->SetGraphEvaluationFunction(std::bind(&Synode::ProcessAudioGraph, this));
 
-	TD::SharedMaster master = GetShared(masterRef);
+	m_Session->Start();
 
-	if (master)
-	{
+}
 
-		TD::SharedMixer mixer = master->AddMixer();
+void Synode::InitializeGraph()
+{
+	m_NodeEditor = std::make_unique<NodeEditor>(1280-16, 720-16);
+}
 
-		TD::SharedChain chain = mixer->AddChain();
-
-		TD::GeneratorRef generatorA = chain->SetGenerator<Generators::SawtoothGenerator>();
-		TD::GeneratorRef generatorB = mixer->AddChain()->SetGenerator<Generators::SawtoothGenerator>();
-		TD::GeneratorRef generatorC = mixer->AddChain()->SetGenerator<Generators::SawtoothGenerator>();
-		TD::GeneratorRef generatorD = mixer->AddChain()->SetGenerator<Generators::SawtoothGenerator>();
-
-		GetShared(generatorA)->mFrequency = 261.63f;
-		GetShared(generatorB)->mFrequency = 329.63f;
-		GetShared(generatorC)->mFrequency = 392.00f;
-		GetShared(generatorD)->mFrequency = 32.70f;
-
-		//TD::SharedComponent lowPass = chain->InsertComponent<Modifiers::Lowpass>();
-
-		m_Session->Start();
-
-	}
-
+const ModIO::Transports::Signal* Synode::ProcessAudioGraph()
+{
+	return &m_MasterNode->getInVal<ModIO::Transports::Signal>("Audio In");
 }

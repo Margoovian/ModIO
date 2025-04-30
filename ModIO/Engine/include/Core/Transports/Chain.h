@@ -20,7 +20,7 @@ namespace ModIO::Transports {
 
 	public:
 		template<Interfaces::AudioGenerator Generator>
-		TD::GeneratorRef SetGenerator() {
+		TD::WeakGenerator SetGenerator() {
 			if (!mGenerator) {
 				mGenerator = std::make_shared<Generator>();
 				mReady = true;

@@ -6,7 +6,7 @@
 
 #include "SDL3/SDL.h"
 
-namespace ModIO {
+namespace ModIO::Backends {
 
 	class SDLAudioSession : public Interfaces::AudioSessionInterface {
 		
@@ -18,7 +18,7 @@ namespace ModIO {
 
 		void Initialize() override;			
 		void AudioLoop() override;		
-		void SendBuffer(Transports::Signal* signal) override;
+		void SendBuffer(const Transports::Signal* signal) override;
 	private:
 		SDL_AudioStream* mAudioStream;
 		SDL_AudioDeviceID mDeviceID;

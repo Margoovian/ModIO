@@ -1,5 +1,5 @@
 
-#include <Backends/SDL3/SDLAudioSession.h>
+#include <Backends/SDL3/SDLNodeAudioSession.h>
 
 #include <Core/Utility/Math.h>
 
@@ -13,7 +13,7 @@
 
 namespace ModIO::Backends {
 
-	SDLAudioSession::SDLAudioSession() : AudioSessionInterface()
+	SDLNodeAudioSession::SDLNodeAudioSession() : AudioSessionInterface()
 	{
 		mAudioSpecOut = SDL_AudioSpec{
 			SDL_AUDIO_F32,
@@ -32,12 +32,12 @@ namespace ModIO::Backends {
 
 	}
 
-	SDLAudioSession::~SDLAudioSession()
+	SDLNodeAudioSession::~SDLNodeAudioSession()
 	{
 		SDL_CloseAudioDevice(mDeviceID);
 	}
 
-	void SDLAudioSession::Initialize()
+	void SDLNodeAudioSession::Initialize()
 	{
 
 		SDLCall(SDL_Init(SDL_INIT_AUDIO), "SDL Audio Initialized");
@@ -51,7 +51,7 @@ namespace ModIO::Backends {
 	}
 
 	// Thread
-	void SDLAudioSession::AudioLoop()
+	void SDLNodeAudioSession::AudioLoop()
 	{
 
 		using namespace Transports;
@@ -64,10 +64,10 @@ namespace ModIO::Backends {
 			int queuedData = SDL_GetAudioStreamAvailable(mAudioStream);
 			if (queuedData <= (int)mTargetBufferLength) {
 				
-				Signal signal = ProcessMaster();
+				const Signal* signal = m_EvaluateCallback();
 
-				if (signal.mValid) {
-					SendBuffer(&signal);
+				if (signal->mValid) {
+					SendBuffer(signal);
 				}
 			}
 			
@@ -79,7 +79,7 @@ namespace ModIO::Backends {
 
 	}
 
-	void SDLAudioSession::SendBuffer(const Transports::Signal* signal)
+	void SDLNodeAudioSession::SendBuffer(const Transports::Signal* signal)
 	{
 		SDL_PutAudioStreamData(mAudioStream, signal->mBuffer, signal->mBufferLength);
 		SDL_FlushAudioStream(mAudioStream);

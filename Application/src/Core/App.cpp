@@ -17,6 +17,8 @@ App::App(const AppContext Context)
 
     FinalizeSetup();
 
+    m_AppContext = Context;
+
 }
 
 const int App::GetWidth() const
@@ -27,6 +29,16 @@ const int App::GetWidth() const
 const int App::GetHeight() const
 {
     return ImGui::GetWindowHeight();
+}
+
+const ImVec2 App::GetSize() const
+{
+    return ImGui::GetWindowSize();
+}
+
+const ImVec2 App::GetWindowPosition() const
+{
+    return ImGui::GetWindowPos();
 }
 
 SDL_Window* App::GetWindow() const
@@ -150,11 +162,19 @@ void App::RenderInternal()
 
     // Rendering
     ImGui::Render();
-    //SDL_RenderSetScale(renderer, io.DisplayFramebufferScale.x, io.DisplayFramebufferScale.y);
-    //SDL_SetRenderDrawColorFloat(renderer, clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-    //SDL_RenderClear(renderer);
-    //ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), renderer);
-    //SDL_RenderPresent(renderer);
+
+    ImGuiIO& io = ImGui::GetIO();
+
+    SDL_SetRenderScale(GetRenderer(), io.DisplayFramebufferScale.x, io.DisplayFramebufferScale.y);
+    SDL_SetRenderDrawColorFloat(GetRenderer(),
+        m_AppContext.BackgroundColour.r,
+        m_AppContext.BackgroundColour.g,
+        m_AppContext.BackgroundColour.b,
+        m_AppContext.BackgroundColour.a
+    );
+    SDL_RenderClear(GetRenderer());
+    ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), GetRenderer());
+    SDL_RenderPresent(GetRenderer());
 }
 
 bool App::ProcessInternal()
@@ -174,11 +194,11 @@ bool App::ProcessInternal()
     Process();
 
     // [If using SDL_MAIN_USE_CALLBACKS: all code below would likely be your SDL_AppIterate() function]
-    if (SDL_GetWindowFlags(GetWindow()) & SDL_WINDOW_MINIMIZED)
-    {
-        SDL_Delay(10);
-        return true; // Should skip
-    }
+    //if (SDL_GetWindowFlags(GetWindow()) & SDL_WINDOW_MINIMIZED)
+    //{
+    //    SDL_Delay(10);
+    //    return true; // Should skip
+    //}
 
     return false; // Should continue
 

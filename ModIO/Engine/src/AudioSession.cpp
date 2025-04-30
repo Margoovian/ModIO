@@ -1,7 +1,9 @@
+#include "AudioSession.h"
 
 #include "AudioSession.h"
 
 #include <Backends/SDL3/SDLAudioSession.h>
+#include <Backends/SDL3/SDLNodeAudioSession.h>
 #include <cassert>
 #include <functional>
 
@@ -12,7 +14,9 @@ namespace ModIO {
 	{
 
 		if (MODIO_PLATFORM == 0)
-			mAudioSessionInterface = new SDLAudioSession();
+			mAudioSessionInterface = new Backends::SDLAudioSession();
+		else if(MODIO_PLATFORM == 1)
+			mAudioSessionInterface = new Backends::SDLNodeAudioSession();
 		else
 			assert(false);
 
@@ -43,6 +47,11 @@ namespace ModIO {
 		return mAudioSessionInterface->mPlaying;
 	}
 
+	ModIO::Interfaces::AudioSessionInterface* const  AudioSession::GetInterface()
+	{
+		return mAudioSessionInterface;
+	}
+
 	void AudioSession::RunAudioThread()
 	{
 		mAudioSessionInterface->mPlaying = true;
@@ -54,7 +63,7 @@ namespace ModIO {
 		mAudioSessionInterface->mPlaying = false;
 	}
 
-	TD::MasterRef AudioSession::GetMaster() {
+	TD::WeakMaster AudioSession::GetMaster() {
 		return mAudioSessionInterface->mMaster;
 	}
 }

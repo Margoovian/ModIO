@@ -41,7 +41,16 @@ namespace ModIO::Transports {
 				delete[] mBuffer;
 		}
 
-		Signal(const Signal& other) = delete;
+		Signal(const Signal& other) {
+
+			mBuffer = new float[other.mSampleCount];
+			mSampleRate = other.mSampleRate;
+			mSampleCount = other.mSampleCount;
+			mSampleSize = other.mSampleSize;
+			mBufferLength = other.mBufferLength;
+			mValid = true;
+
+		};
 		Signal& operator=(const Signal& other) = delete;
 
 		Signal(Signal&& other) noexcept

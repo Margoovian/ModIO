@@ -17,11 +17,11 @@
 namespace ModIO {
 
 	template<typename T>
-	int SDLCheckNull(T& result) {
+	static int SDLCheckNull(T& result) {
 		if (result == NULL) return -1; else return 0;
 	}
 
-	bool SDLLogCall(int result, const char* function,const char* file, int line, const char* displayName = "Unnamed Command") {
+	static bool SDLLogCall(int result, const char* function,const char* file, int line, const char* displayName = "Unnamed Command") {
 
 		std::string error = SDL_GetError();
 

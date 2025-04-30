@@ -7,3 +7,6 @@
 [submodule "Shared/ImNodeFlow"]
 	path = Shared/ImNodeFlow
 	url = https://github.com/Margoovian/ImNodeFlow
+[submodule "Shared/ImGuiKnobs"]
+	path = Shared/ImGuiKnobs
+	url = https://github.com/altschuler/imgui-knobs

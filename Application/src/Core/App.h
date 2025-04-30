@@ -8,6 +8,7 @@ struct AppContext {
 	int Width, Height;
 	const char* Title;
 	uint32_t Flags;
+	struct Colour { float r, g, b, a; } BackgroundColour;
 };
 
 // Application framework
@@ -27,6 +28,8 @@ protected:
 
 	const int GetWidth() const;
 	const int GetHeight() const;
+	const class ImVec2 GetSize() const;
+	const class ImVec2 GetWindowPosition() const;
 
 
 private:
@@ -49,5 +52,6 @@ private:
 	SDL_Renderer* m_Renderer;
 	
 	bool m_Running = false;
+	AppContext m_AppContext;
 
 };

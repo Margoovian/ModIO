@@ -12,4 +12,6 @@
 #include "Generators/SquarewaveGenerator.h"
 #include "Generators/TrianglewaveGenerator.h"
 
+#include "Backends/SDL3/SDLNodeAudioSession.h"
+
 #include "Modifiers/Lowpass.h"

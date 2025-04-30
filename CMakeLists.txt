@@ -4,6 +4,7 @@ set(CMAKE_CXX_STANDARD 20)
 # Subdirectories/Library Paths #####################
 
 set(IMGUI_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Shared/imgui")
+set(IMGUI_KNOBS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Shared/ImGuiKnobs")
 set(STB_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Shared/stb" )
 add_subdirectory("Shared/SDL3")
 add_subdirectory("Shared/ImNodeFlow")
@@ -22,6 +23,7 @@ target_include_directories(ModIO PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/ModIO/Engin
 target_sources(ModIO PRIVATE ${ENGINE_SOURCE})
 
 target_compile_definitions(ModIO PRIVATE MOD_BUILD_DLL)
+#add_compile_definitions(ModIO PRIVATE MOD_BACKEND_NODE)
 
 if(WIN32)
   target_compile_definitions(ModIO PRIVATE MOD_PLATFORM_WINDOWS)  
@@ -56,6 +58,10 @@ set(IMGUI_BACKENDS_SOURCE
         "${IMGUI_PATH}/backends/imgui_impl_sdlrenderer3.cpp" 
 )
 
+set(IMGUI_KNOBS_SOURCE
+        "${IMGUI_KNOBS_PATH}/imgui-knobs.cpp"   
+)
+
 ####################################################
 
 # Application ######################################
@@ -69,6 +75,7 @@ add_executable(Application ${APPLICATION_SOURCE} )
 target_include_directories(Application
     PRIVATE
     ${IMGUI_PATH} 
+    ${IMGUI_KNOBS_PATH}
     "${IMGUI_PATH}/backends"
     ${STB_PATH}
     "${CMAKE_CURRENT_SOURCE_DIR}/Application/src"
@@ -78,10 +85,12 @@ target_sources(Application
     PRIVATE
     ${IMGUI_SOURCE}
     ${IMGUI_BACKENDS_SOURCE}
+    ${IMGUI_KNOBS_SOURCE}
     "${STB_PATH}/stb_image.cpp"
 )
 
 add_compile_definitions(Application PRIVATE IMGUI_DEFINE_MATH_OPERATORS)
+add_compile_definitions(Application PRIVATE MOD_BACKEND_NODE)
 target_compile_definitions(Application PRIVATE IMGUI_NODES_DATA="${IMGUI_NODES_PATH}/examples/data")  
 
 if(WIN32)

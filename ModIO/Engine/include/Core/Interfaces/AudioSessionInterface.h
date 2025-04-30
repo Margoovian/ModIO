@@ -23,7 +23,7 @@ namespace ModIO::Interfaces {
 		// Thread safe functions
 		virtual void AudioLoop() = 0;
 
-		virtual void SendBuffer(Transports::Signal* signal) = 0;
+		virtual void SendBuffer(const Transports::Signal* signal) = 0;
 
 		Transports::Signal ProcessMaster() {
 			return mMaster->Process();

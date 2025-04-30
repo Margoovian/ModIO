@@ -6,7 +6,12 @@
 
  #ifdef MOD_PLATFORM_WINDOWS
   #define MOD_API __declspec(dllexport)
-  constexpr uint8_t MODIO_PLATFORM = 0; 
+
+   #ifdef MOD_BACKEND_NODE
+    constexpr uint8_t MODIO_PLATFORM = 1;
+   #else
+    constexpr uint8_t MODIO_PLATFORM = 0;
+   #endif
 
  #else
   #error ModIO only supports windows!
@@ -16,7 +21,12 @@
 
  #ifdef MOD_PLATFORM_WINDOWS
   #define MOD_API __declspec(dllimport)
-  constexpr uint8_t MODIO_PLATFORM = 0;
+
+   #ifdef MOD_BACKEND_NODE
+    constexpr uint8_t MODIO_PLATFORM = 1;
+   #else
+    constexpr uint8_t MODIO_PLATFORM = 0;
+   #endif
 
  #else
   #error ModIO only supports windows!

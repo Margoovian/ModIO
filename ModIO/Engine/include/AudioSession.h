@@ -19,8 +19,9 @@ namespace ModIO {
 		MOD_API void Start();
 		MOD_API void Stop();
 		MOD_API bool IsRunning();
+		MOD_API ModIO::Interfaces::AudioSessionInterface * const GetInterface();
 
-		MOD_API TD::MasterRef GetMaster();
+		MOD_API TD::WeakMaster GetMaster();
  
 	private:
 
