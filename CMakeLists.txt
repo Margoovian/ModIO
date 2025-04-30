@@ -71,6 +71,7 @@ target_include_directories(Application
     ${IMGUI_PATH} 
     "${IMGUI_PATH}/backends"
     ${STB_PATH}
+    "${CMAKE_CURRENT_SOURCE_DIR}/Application/src"
 )
 
 target_sources(Application 
